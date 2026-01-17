@@ -1,0 +1,136 @@
+{
+  "description": "VCP v1.1 Sample Events - GDPR-Compliant Crypto-Shredding Demo",
+  "version": "1.1",
+  "generated_at": "2025-01-17T10:00:00Z",
+  "events": [
+    {
+      "header": {
+        "event_id": "01938a5b-c2d3-7e4f-8901-234567890abc",
+        "event_type": "ORD",
+        "timestamp": "2025-01-17T10:00:01.123456Z",
+        "timestamp_int": 1737108001123456000,
+        "timestamp_precision": "MICROSECOND",
+        "clock_sync_status": "NTP_SYNCED",
+        "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "event_hash": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
+        "pii_key_ids": ["KEY-TRADER-DE-12345-20250117100001-abc123"]
+      },
+      "payload": {
+        "account_id": {
+          "key_id": "KEY-TRADER-DE-12345-20250117100001-abc123",
+          "nonce": "dGVzdG5vbmNlMTIz",
+          "ciphertext": "Y2lwaGVydGV4dGRhdGE=",
+          "algorithm": "AES-256-GCM"
+        },
+        "email": {
+          "key_id": "KEY-TRADER-DE-12345-20250117100001-abc123",
+          "nonce": "dGVzdG5vbmNlNDU2",
+          "ciphertext": "ZW1haWxjaXBoZXI=",
+          "algorithm": "AES-256-GCM"
+        },
+        "symbol": "EURUSD",
+        "side": "BUY",
+        "quantity": 100000,
+        "price": 1.0850,
+        "algorithm_id": "ALG-MOMENTUM-001",
+        "algorithm_version": "2.3.1",
+        "decision_factors": "RSI_OVERSOLD,MACD_BULLISH_CROSS,VOLUME_SPIKE"
+      },
+      "gdpr_metadata": {
+        "pii_fields_encrypted": ["account_id", "email"],
+        "subject_id_hash": "f6e5d4c3b2a19876543210fedcba9876543210fedcba9876543210fedcba98",
+        "retention_until": "2030-01-17T10:00:01Z",
+        "erasure_eligible": false,
+        "legal_basis": "MiFID II Article 16(7)"
+      }
+    },
+    {
+      "header": {
+        "event_id": "01938a5b-c2d4-7e4f-8902-234567890abd",
+        "event_type": "ACK",
+        "timestamp": "2025-01-17T10:00:01.234567Z",
+        "timestamp_int": 1737108001234567000,
+        "timestamp_precision": "MICROSECOND",
+        "clock_sync_status": "NTP_SYNCED",
+        "prev_hash": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
+        "event_hash": "b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3",
+        "pii_key_ids": ["KEY-TRADER-DE-12345-20250117100001-abc123"]
+      },
+      "payload": {
+        "account_id": {
+          "key_id": "KEY-TRADER-DE-12345-20250117100001-abc123",
+          "nonce": "dGVzdG5vbmNlNzg5",
+          "ciphertext": "YWNjb3VudGNpcGhlcg==",
+          "algorithm": "AES-256-GCM"
+        },
+        "order_id": "ORD-XEUR-2025-001",
+        "venue_id": "XEUR",
+        "status": "ACCEPTED",
+        "venue_timestamp": "2025-01-17T10:00:01.200000Z"
+      },
+      "gdpr_metadata": {
+        "pii_fields_encrypted": ["account_id"],
+        "subject_id_hash": "f6e5d4c3b2a19876543210fedcba9876543210fedcba9876543210fedcba98",
+        "retention_until": "2030-01-17T10:00:01Z",
+        "erasure_eligible": false,
+        "legal_basis": "MiFID II Article 16(7)"
+      }
+    },
+    {
+      "header": {
+        "event_id": "01938a5b-c2d5-7e4f-8903-234567890abe",
+        "event_type": "EXE",
+        "timestamp": "2025-01-17T10:00:01.345678Z",
+        "timestamp_int": 1737108001345678000,
+        "timestamp_precision": "MICROSECOND",
+        "clock_sync_status": "NTP_SYNCED",
+        "prev_hash": "b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3",
+        "event_hash": "c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4",
+        "pii_key_ids": ["KEY-TRADER-DE-12345-20250117100001-abc123"]
+      },
+      "payload": {
+        "account_id": {
+          "key_id": "KEY-TRADER-DE-12345-20250117100001-abc123",
+          "nonce": "dGVzdG5vbmNlMDEy",
+          "ciphertext": "ZXhlY3V0aW9uYWNj",
+          "algorithm": "AES-256-GCM"
+        },
+        "order_id": "ORD-XEUR-2025-001",
+        "execution_id": "EXE-XEUR-2025-001-001",
+        "fill_price": 1.0851,
+        "fill_quantity": 100000,
+        "venue_id": "XEUR",
+        "liquidity_indicator": "ADDED",
+        "execution_timestamp": "2025-01-17T10:00:01.300000Z"
+      },
+      "gdpr_metadata": {
+        "pii_fields_encrypted": ["account_id"],
+        "subject_id_hash": "f6e5d4c3b2a19876543210fedcba9876543210fedcba9876543210fedcba98",
+        "retention_until": "2030-01-17T10:00:01Z",
+        "erasure_eligible": false,
+        "legal_basis": "MiFID II Article 16(7)"
+      }
+    }
+  ],
+  "erasure_certificate_example": {
+    "certificate_id": "01938a5b-c2d6-7e4f-8904-234567890abf",
+    "type": "VCP_ERASURE_CERTIFICATE",
+    "version": "1.0",
+    "subject_id_hash": "f6e5d4c3b2a19876543210fedcba9876543210fedcba9876543210fedcba98",
+    "erasure_timestamp": "2030-01-17T10:00:00Z",
+    "keys_destroyed": 1,
+    "key_ids_destroyed": ["KEY-TRADER-DE-12345-20250117100001-abc123"],
+    "method": "CRYPTOGRAPHIC_KEY_DESTRUCTION",
+    "compliance_references": [
+      "GDPR Article 17(1)",
+      "EDPB Guidelines 02/2025",
+      "VCP-PRIVACY v1.1"
+    ],
+    "verification": {
+      "hash_chain_intact": true,
+      "pii_recoverable": false,
+      "audit_trail_preserved": true
+    },
+    "certificate_hash": "d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5"
+  }
+}

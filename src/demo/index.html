@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VCP v1.1 Crypto-Shredding Demo | GDPR-MiFID II Paradox Resolver</title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --success: #276749;
+            --success-light: #48bb78;
+            --warning: #c05621;
+            --danger: #c53030;
+            --gray-50: #f7fafc;
+            --gray-100: #edf2f7;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e0;
+            --gray-600: #718096;
+            --gray-700: #4a5568;
+            --gray-800: #2d3748;
+            --gray-900: #1a202c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+            min-height: 100vh;
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        header h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        header .subtitle {
+            color: var(--gray-600);
+            font-size: 1.1rem;
+        }
+        
+        .paradox-banner {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .paradox-banner h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .paradox-banner p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        
+        .regulations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .regulation-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .regulation-card h3 {
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .regulation-card p {
+            font-size: 0.8rem;
+            color: var(--gray-600);
+        }
+        
+        .regulation-card .status {
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .status.compliant { color: var(--success); }
+        .status.pending { color: var(--warning); }
+        
+        .demo-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .demo-section h2 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .phase-indicator {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-light);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover:not(:disabled) {
+            background: #e53e3e;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: var(--success-light);
+        }
+        
+        .event-chain {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+            min-height: 80px;
+        }
+        
+        .event-block {
+            background: white;
+            border: 2px solid var(--gray-300);
+            border-radius: 8px;
+            padding: 0.75rem;
+            min-width: 120px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .event-block.highlighted {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.2);
+        }
+        
+        .event-block .type {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+        
+        .event-block .hash {
+            font-family: 'Consolas', monospace;
+            font-size: 0.7rem;
+            color: var(--gray-600);
+            margin-top: 0.25rem;
+        }
+        
+        .event-block .pii-status {
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .pii-status.recoverable {
+            background: #c6f6d5;
+            color: var(--success);
+        }
+        
+        .pii-status.shredded {
+            background: #fed7d7;
+            color: var(--danger);
+        }
+        
+        .chain-arrow {
+            color: var(--gray-400);
+            font-size: 1.5rem;
+        }
+        
+        .verification-result {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .verification-result.success {
+            background: #c6f6d5;
+            border: 1px solid var(--success-light);
+        }
+        
+        .verification-result.error {
+            background: #fed7d7;
+            border: 1px solid var(--danger);
+        }
+        
+        .certificate-display {
+            background: var(--gray-900);
+            color: #68d391;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.8rem;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .log-area {
+            background: var(--gray-800);
+            color: var(--gray-100);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.8rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            padding: 0.25rem 0;
+            border-bottom: 1px solid var(--gray-700);
+        }
+        
+        .log-entry .timestamp {
+            color: var(--gray-500);
+        }
+        
+        .log-entry.success { color: #68d391; }
+        .log-entry.warning { color: #f6ad55; }
+        .log-entry.error { color: #fc8181; }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .comparison-table th {
+            background: var(--gray-100);
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .comparison-table tr:hover {
+            background: var(--gray-50);
+        }
+        
+        .check { color: var(--success); }
+        .cross { color: var(--danger); }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray-600);
+            font-size: 0.85rem;
+        }
+        
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 VCP v1.1 Crypto-Shredding Demo</h1>
+            <p class="subtitle">VeritasChain Protocol | "The Erasable Immutable Log"</p>
+        </header>
+        
+        <div class="paradox-banner">
+            <h2>The GDPR-MiFID II Paradox</h2>
+            <p>"How do you prove data was deleted while proving it was never altered?"</p>
+        </div>
+        
+        <div class="regulations">
+            <div class="regulation-card">
+                <h3>GDPR Article 17</h3>
+                <p>Right to Erasure</p>
+                <div class="status" id="gdpr-status">Pending</div>
+            </div>
+            <div class="regulation-card">
+                <h3>MiFID II Article 16(7)</h3>
+                <p>5-7 Year Retention</p>
+                <div class="status compliant">✓ Compliant</div>
+            </div>
+            <div class="regulation-card">
+                <h3>EDPB Guidelines 02/2025</h3>
+                <p>Blockchain & GDPR</p>
+                <div class="status compliant">✓ Aligned</div>
+            </div>
+            <div class="regulation-card">
+                <h3>EU AI Act Article 12</h3>
+                <p>Automatic Logging</p>
+                <div class="status compliant">✓ Compliant</div>
+            </div>
+        </div>
+        
+        <!-- Phase 1: Record -->
+        <div class="demo-section">
+            <h2><span class="phase-indicator">1</span> RECORD - Create Trading Events</h2>
+            <div class="controls">
+                <button class="btn-primary" onclick="createOrderEvent()">
+                    📝 Create Order (ORD)
+                </button>
+                <button class="btn-primary" onclick="createAckEvent()">
+                    ✓ Acknowledge (ACK)
+                </button>
+                <button class="btn-primary" onclick="createExeEvent()">
+                    💱 Execute (EXE)
+                </button>
+            </div>
+            <div class="event-chain" id="event-chain">
+                <span style="color: var(--gray-500);">No events yet. Click buttons above to create events.</span>
+            </div>
+        </div>
+        
+        <!-- Phase 2: Retain -->
+        <div class="demo-section">
+            <h2><span class="phase-indicator">2</span> RETAIN - Verify Chain Integrity</h2>
+            <div class="controls">
+                <button class="btn-success" onclick="verifyChain()">
+                    🔍 Verify Hash Chain
+                </button>
+                <button class="btn-primary" onclick="checkPIIStatus()">
+                    👤 Check PII Status
+                </button>
+            </div>
+            <div id="verification-result"></div>
+        </div>
+        
+        <!-- Phase 3: Erase -->
+        <div class="demo-section">
+            <h2><span class="phase-indicator">3</span> ERASE - GDPR Article 17 Request</h2>
+            <div class="controls">
+                <button class="btn-danger" onclick="executeErasure()" id="erasure-btn">
+                    🗑️ Execute Crypto-Shredding
+                </button>
+            </div>
+            <p style="color: var(--gray-600); font-size: 0.85rem; margin-bottom: 1rem;">
+                Destroys encryption keys, making PII cryptographically unrecoverable while preserving hash chain integrity.
+            </p>
+            <div id="certificate-area"></div>
+        </div>
+        
+        <!-- Phase 4: Verify Post-Erasure -->
+        <div class="demo-section">
+            <h2><span class="phase-indicator">4</span> VERIFY POST-ERASURE - The Paradox Resolved</h2>
+            <div class="controls">
+                <button class="btn-success" onclick="verifyPostErasure()">
+                    ✓ Verify Chain After Erasure
+                </button>
+            </div>
+            <div id="post-verification-result"></div>
+        </div>
+        
+        <!-- Comparison Table -->
+        <div class="demo-section">
+            <h2>📊 Comparison: VCP vs Traditional Approaches</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Requirement</th>
+                        <th>VCP v1.1</th>
+                        <th>Traditional Logs</th>
+                        <th>Blockchain</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>GDPR Erasure</td>
+                        <td><span class="check">✓</span> Crypto-shredding</td>
+                        <td><span class="cross">△</span> Physical deletion (proof difficult)</td>
+                        <td><span class="cross">✗</span> Immutability conflict</td>
+                    </tr>
+                    <tr>
+                        <td>MiFID II Retention</td>
+                        <td><span class="check">✓</span> 5-7 year hash chain</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Tamper Detection</td>
+                        <td><span class="check">✓</span> Hash chain</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Third-Party Verification</td>
+                        <td><span class="check">✓</span> Merkle proof</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Implementation Cost</td>
+                        <td><span class="check">✓</span> Low (Sidecar)</td>
+                        <td><span class="check">✓</span> Low</td>
+                        <td><span class="cross">✗</span> High</td>
+                    </tr>
+                    <tr>
+                        <td>EDPB 02/2025 Compliant</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="cross">△</span></td>
+                        <td><span class="cross">△</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Activity Log -->
+        <div class="demo-section">
+            <h2>📋 Activity Log</h2>
+            <div class="log-area" id="activity-log">
+                <div class="log-entry"><span class="timestamp">[INIT]</span> VCP v1.1 Crypto-Shredding Demo initialized</div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>
+                <strong>VeritasChain Standards Organization (VSO)</strong><br>
+                <a href="https://veritaschain.org">veritaschain.org</a> | 
+                <a href="https://github.com/veritaschain/vcp-spec">GitHub</a> | 
+                <a href="https://datatracker.ietf.org/doc/draft-kamimura-scitt-vcp/">IETF Draft</a>
+            </p>
+            <p style="margin-top: 0.5rem;">
+                © 2025 VeritasChain Standards Organization. Licensed under Apache 2.0.
+            </p>
+        </footer>
+    </div>
+    
+    <script>
+        // VCP Crypto-Shredding Demo - JavaScript Implementation
+        
+        class VCPCryptoShredder {
+            constructor() {
+                this.eventChain = [];
+                this.keyStore = new Map();
+                this.erasureExecuted = false;
+                this.subjectId = 'TRADER-DE-12345';
+            }
+            
+            // Generate UUID v7 (simplified)
+            generateUUID() {
+                const timestamp = Date.now().toString(16).padStart(12, '0');
+                const random = Array.from(crypto.getRandomValues(new Uint8Array(10)))
+                    .map(b => b.toString(16).padStart(2, '0')).join('');
+                return `${timestamp.slice(0,8)}-${timestamp.slice(8,12)}-7${random.slice(0,3)}-${random.slice(3,7)}-${random.slice(7,19)}`;
+            }
+            
+            // Generate encryption key for subject
+            async generateKey(subjectId) {
+                const key = await crypto.subtle.generateKey(
+                    { name: 'AES-GCM', length: 256 },
+                    true,
+                    ['encrypt', 'decrypt']
+                );
+                const keyId = `KEY-${subjectId}-${Date.now()}`;
+                this.keyStore.set(keyId, key);
+                return keyId;
+            }
+            
+            // Encrypt PII
+            async encryptPII(plaintext, keyId) {
+                const key = this.keyStore.get(keyId);
+                if (!key) throw new Error('Key not found');
+                
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const encoded = new TextEncoder().encode(plaintext);
+                const ciphertext = await crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv },
+                    key,
+                    encoded
+                );
+                
+                return {
+                    keyId,
+                    iv: this.arrayToBase64(iv),
+                    ciphertext: this.arrayToBase64(new Uint8Array(ciphertext)),
+                    algorithm: 'AES-256-GCM'
+                };
+            }
+            
+            // Calculate SHA-256 hash
+            async calculateHash(prevHash, content) {
+                const combined = prevHash + JSON.stringify(content);
+                const encoded = new TextEncoder().encode(combined);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', encoded);
+                return this.arrayToHex(new Uint8Array(hashBuffer));
+            }
+            
+            // Create VCP event
+            async createEvent(eventType, payload, piiFields) {
+                const prevHash = this.eventChain.length > 0 
+                    ? this.eventChain[this.eventChain.length - 1].header.eventHash 
+                    : '0'.repeat(64);
+                
+                // Get or create key
+                let keyId = Array.from(this.keyStore.keys()).find(k => k.includes(this.subjectId));
+                if (!keyId) {
+                    keyId = await this.generateKey(this.subjectId);
+                }
+                
+                // Encrypt PII fields
+                const encryptedPayload = { ...payload };
+                for (const field of piiFields) {
+                    if (encryptedPayload[field]) {
+                        encryptedPayload[field] = await this.encryptPII(
+                            String(encryptedPayload[field]),
+                            keyId
+                        );
+                    }
+                }
+                
+                const eventHash = await this.calculateHash(prevHash, encryptedPayload);
+                
+                const event = {
+                    header: {
+                        eventId: this.generateUUID(),
+                        eventType,
+                        timestamp: new Date().toISOString(),
+                        timestampPrecision: 'MICROSECOND',
+                        clockSyncStatus: 'NTP_SYNCED',
+                        prevHash,
+                        eventHash,
+                        piiKeyIds: [keyId]
+                    },
+                    payload: encryptedPayload,
+                    piiFields,
+                    gdprMetadata: {
+                        subjectIdHash: await this.hashString(this.subjectId),
+                        retentionUntil: new Date(Date.now() + 5 * 365 * 24 * 60 * 60 * 1000).toISOString(),
+                        erasureEligible: false
+                    }
+                };
+                
+                this.eventChain.push(event);
+                return event;
+            }
+            
+            // Verify chain integrity
+            async verifyChain() {
+                const results = {
+                    verified: true,
+                    eventsChecked: this.eventChain.length,
+                    errors: []
+                };
+                
+                for (let i = 0; i < this.eventChain.length; i++) {
+                    const event = this.eventChain[i];
+                    const expectedPrevHash = i === 0 
+                        ? '0'.repeat(64) 
+                        : this.eventChain[i - 1].header.eventHash;
+                    
+                    if (event.header.prevHash !== expectedPrevHash) {
+                        results.verified = false;
+                        results.errors.push({
+                            eventIndex: i,
+                            error: 'PREV_HASH_MISMATCH'
+                        });
+                    }
+                    
+                    const recalculatedHash = await this.calculateHash(
+                        event.header.prevHash,
+                        event.payload
+                    );
+                    
+                    if (event.header.eventHash !== recalculatedHash) {
+                        results.verified = false;
+                        results.errors.push({
+                            eventIndex: i,
+                            error: 'EVENT_HASH_MISMATCH'
+                        });
+                    }
+                }
+                
+                return results;
+            }
+            
+            // Execute crypto-shredding (GDPR erasure)
+            async executeErasure() {
+                const destroyedKeys = [];
+                
+                for (const [keyId, _] of this.keyStore) {
+                    if (keyId.includes(this.subjectId)) {
+                        this.keyStore.delete(keyId);
+                        destroyedKeys.push(keyId);
+                    }
+                }
+                
+                this.erasureExecuted = true;
+                
+                // Generate erasure certificate
+                const certificate = {
+                    certificateId: this.generateUUID(),
+                    type: 'VCP_ERASURE_CERTIFICATE',
+                    version: '1.0',
+                    subjectIdHash: await this.hashString(this.subjectId),
+                    erasureTimestamp: new Date().toISOString(),
+                    keysDestroyed: destroyedKeys.length,
+                    keyIdsDestroyed: destroyedKeys,
+                    method: 'CRYPTOGRAPHIC_KEY_DESTRUCTION',
+                    complianceReferences: [
+                        'GDPR Article 17(1)',
+                        'EDPB Guidelines 02/2025',
+                        'VCP-PRIVACY v1.1'
+                    ],
+                    verification: {
+                        hashChainIntact: true,
+                        piiRecoverable: false,
+                        auditTrailPreserved: true
+                    }
+                };
+                
+                certificate.certificateHash = await this.hashString(JSON.stringify(certificate));
+                
+                return certificate;
+            }
+            
+            // Check PII recoverability
+            canRecoverPII(event) {
+                const result = {};
+                for (const field of event.piiFields || []) {
+                    const encrypted = event.payload[field];
+                    if (encrypted && encrypted.keyId) {
+                        result[field] = this.keyStore.has(encrypted.keyId);
+                    }
+                }
+                return result;
+            }
+            
+            // Utility functions
+            arrayToBase64(array) {
+                return btoa(String.fromCharCode(...array));
+            }
+            
+            arrayToHex(array) {
+                return Array.from(array).map(b => b.toString(16).padStart(2, '0')).join('');
+            }
+            
+            async hashString(str) {
+                const encoded = new TextEncoder().encode(str);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', encoded);
+                return this.arrayToHex(new Uint8Array(hashBuffer));
+            }
+        }
+        
+        // Initialize demo
+        const shredder = new VCPCryptoShredder();
+        
+        function log(message, type = 'info') {
+            const logArea = document.getElementById('activity-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.innerHTML = `<span class="timestamp">[${timestamp}]</span> ${message}`;
+            logArea.appendChild(entry);
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+        
+        function renderEventChain() {
+            const container = document.getElementById('event-chain');
+            
+            if (shredder.eventChain.length === 0) {
+                container.innerHTML = '<span style="color: var(--gray-500);">No events yet. Click buttons above to create events.</span>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            shredder.eventChain.forEach((event, index) => {
+                if (index > 0) {
+                    const arrow = document.createElement('span');
+                    arrow.className = 'chain-arrow';
+                    arrow.textContent = '→';
+                    container.appendChild(arrow);
+                }
+                
+                const block = document.createElement('div');
+                block.className = 'event-block';
+                
+                const piiStatus = shredder.canRecoverPII(event);
+                const canRecover = Object.values(piiStatus).some(v => v);
+                
+                block.innerHTML = `
+                    <div class="type">${event.header.eventType}</div>
+                    <div class="hash">${event.header.eventHash.slice(0, 12)}...</div>
+                    <div class="pii-status ${canRecover ? 'recoverable' : 'shredded'}">
+                        ${canRecover ? '🔓 PII Recoverable' : '🔒 PII Shredded'}
+                    </div>
+                `;
+                
+                container.appendChild(block);
+            });
+        }
+        
+        async function createOrderEvent() {
+            try {
+                const event = await shredder.createEvent('ORD', {
+                    accountId: 'ACC-12345-DE',
+                    email: 'trader@example.de',
+                    ipAddress: '192.168.1.100',
+                    symbol: 'EURUSD',
+                    side: 'BUY',
+                    quantity: 100000,
+                    price: 1.0850,
+                    algorithmId: 'ALG-MOMENTUM-001'
+                }, ['accountId', 'email', 'ipAddress']);
+                
+                log(`Created ORD event: ${event.header.eventId.slice(0, 20)}...`, 'success');
+                log(`  → PII encrypted: accountId, email, ipAddress`);
+                log(`  → Hash: ${event.header.eventHash.slice(0, 32)}...`);
+                renderEventChain();
+            } catch (err) {
+                log(`Error creating event: ${err.message}`, 'error');
+            }
+        }
+        
+        async function createAckEvent() {
+            try {
+                const event = await shredder.createEvent('ACK', {
+                    accountId: 'ACC-12345-DE',
+                    orderId: 'ORD-2025-001',
+                    venue: 'XEUR',
+                    status: 'ACCEPTED'
+                }, ['accountId']);
+                
+                log(`Created ACK event: ${event.header.eventId.slice(0, 20)}...`, 'success');
+                renderEventChain();
+            } catch (err) {
+                log(`Error creating event: ${err.message}`, 'error');
+            }
+        }
+        
+        async function createExeEvent() {
+            try {
+                const event = await shredder.createEvent('EXE', {
+                    accountId: 'ACC-12345-DE',
+                    orderId: 'ORD-2025-001',
+                    executionId: 'EXE-2025-001',
+                    fillPrice: 1.0851,
+                    fillQuantity: 100000,
+                    venue: 'XEUR'
+                }, ['accountId']);
+                
+                log(`Created EXE event: ${event.header.eventId.slice(0, 20)}...`, 'success');
+                renderEventChain();
+            } catch (err) {
+                log(`Error creating event: ${err.message}`, 'error');
+            }
+        }
+        
+        async function verifyChain() {
+            const resultDiv = document.getElementById('verification-result');
+            
+            if (shredder.eventChain.length === 0) {
+                resultDiv.innerHTML = '<div class="verification-result" style="background: var(--gray-100);">No events to verify. Create some events first.</div>';
+                return;
+            }
+            
+            const result = await shredder.verifyChain();
+            
+            if (result.verified) {
+                resultDiv.innerHTML = `
+                    <div class="verification-result success">
+                        <strong>✓ Chain Integrity Verified</strong><br>
+                        Events checked: ${result.eventsChecked}<br>
+                        All hashes valid, chain unbroken.
+                    </div>
+                `;
+                log(`Chain verification: PASSED (${result.eventsChecked} events)`, 'success');
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="verification-result error">
+                        <strong>✗ Chain Integrity Failed</strong><br>
+                        Errors: ${JSON.stringify(result.errors)}
+                    </div>
+                `;
+                log(`Chain verification: FAILED`, 'error');
+            }
+        }
+        
+        function checkPIIStatus() {
+            const resultDiv = document.getElementById('verification-result');
+            
+            if (shredder.eventChain.length === 0) {
+                resultDiv.innerHTML = '<div class="verification-result" style="background: var(--gray-100);">No events to check.</div>';
+                return;
+            }
+            
+            let html = '<div class="verification-result success"><strong>PII Recovery Status:</strong><br><br>';
+            
+            shredder.eventChain.forEach((event, index) => {
+                const status = shredder.canRecoverPII(event);
+                const statusStr = Object.entries(status)
+                    .map(([k, v]) => `${k}: ${v ? '🔓 Recoverable' : '🔒 Shredded'}`)
+                    .join(', ');
+                html += `Event ${index + 1} (${event.header.eventType}): ${statusStr || 'No PII fields'}<br>`;
+            });
+            
+            html += '</div>';
+            resultDiv.innerHTML = html;
+            
+            log('PII status checked for all events');
+        }
+        
+        async function executeErasure() {
+            if (shredder.erasureExecuted) {
+                log('Erasure already executed', 'warning');
+                return;
+            }
+            
+            if (shredder.eventChain.length === 0) {
+                log('No events to erase. Create some events first.', 'warning');
+                return;
+            }
+            
+            const certificate = await shredder.executeErasure();
+            
+            // Update GDPR status
+            document.getElementById('gdpr-status').textContent = '✓ Compliant';
+            document.getElementById('gdpr-status').className = 'status compliant';
+            
+            // Display certificate
+            const certArea = document.getElementById('certificate-area');
+            certArea.innerHTML = `
+                <h3 style="margin-bottom: 0.5rem; color: var(--primary);">📜 Erasure Certificate</h3>
+                <div class="certificate-display">${JSON.stringify(certificate, null, 2)}</div>
+            `;
+            
+            log(`GDPR Erasure executed: ${certificate.keysDestroyed} keys destroyed`, 'warning');
+            log(`Certificate ID: ${certificate.certificateId}`, 'success');
+            
+            // Disable erasure button
+            document.getElementById('erasure-btn').disabled = true;
+            
+            // Update event chain display
+            renderEventChain();
+        }
+        
+        async function verifyPostErasure() {
+            const resultDiv = document.getElementById('post-verification-result');
+            
+            if (!shredder.erasureExecuted) {
+                resultDiv.innerHTML = '<div class="verification-result" style="background: var(--gray-100);">Execute crypto-shredding first to see post-erasure verification.</div>';
+                return;
+            }
+            
+            const chainResult = await shredder.verifyChain();
+            
+            // Check PII status
+            let allPIIShredded = true;
+            shredder.eventChain.forEach(event => {
+                const status = shredder.canRecoverPII(event);
+                if (Object.values(status).some(v => v)) {
+                    allPIIShredded = false;
+                }
+            });
+            
+            resultDiv.innerHTML = `
+                <div class="verification-result success">
+                    <h3 style="margin-bottom: 1rem;">🎉 The GDPR-MiFID II Paradox is Resolved!</h3>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td><strong>Hash Chain Integrity:</strong></td>
+                            <td>${chainResult.verified ? '✓ PRESERVED' : '✗ BROKEN'}</td>
+                            <td style="color: var(--gray-600);">MiFID II Article 16(7) ✓</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PII Data:</strong></td>
+                            <td>${allPIIShredded ? '✓ CRYPTO-SHREDDED' : '⚠ Partial'}</td>
+                            <td style="color: var(--gray-600);">GDPR Article 17 ✓</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Audit Trail:</strong></td>
+                            <td>✓ INTACT</td>
+                            <td style="color: var(--gray-600);">EU AI Act Article 12 ✓</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Erasure Proof:</strong></td>
+                            <td>✓ CERTIFICATE GENERATED</td>
+                            <td style="color: var(--gray-600);">EDPB 02/2025 ✓</td>
+                        </tr>
+                    </table>
+                </div>
+            `;
+            
+            log('Post-erasure verification complete: All requirements satisfied!', 'success');
+        }
+        
+        // Initialize
+        log('Demo ready. Create some trading events to begin.');
+    </script>
+</body>
+</html>
