@@ -30,7 +30,7 @@ def main():
     print()
     print("╔══════════════════════════════════════════════════════════════════╗")
     print("║           VCP v1.1 Crypto-Shredding Quick Demo                   ║")
-    print("║           'The Erasable Immutable Log'                           ║")
+    print("║           Tamper-evident log with crypto-shredding               ║")
     print("╚══════════════════════════════════════════════════════════════════╝")
     print()
     
@@ -193,7 +193,7 @@ def main():
     print("║                                                                  ║")
     print("║  ✓ GDPR Article 17: PII cryptographically unrecoverable         ║")
     print("║  ✓ MiFID II Article 16(7): Hash chain intact, audit preserved   ║")
-    print("║  ✓ EDPB 02/2025: Compliant architecture                         ║")
+    print("║  - Compliance with GDPR/MiFID II/EDPB is not determined          ║")
     print("║  ✓ EU AI Act Article 12: Decision trail preserved               ║")
     print("║                                                                  ║")
     print("╚══════════════════════════════════════════════════════════════════╝")

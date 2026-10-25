@@ -380,7 +380,7 @@
     <div class="container">
         <header>
             <h1>🔐 VCP v1.1 Crypto-Shredding Demo</h1>
-            <p class="subtitle">VeritasChain Protocol | "The Erasable Immutable Log"</p>
+            <p class="subtitle">VeritasChain Protocol | Tamper-evident log with crypto-shredding</p>
         </header>
         
         <div class="paradox-banner">
@@ -397,17 +397,17 @@
             <div class="regulation-card">
                 <h3>MiFID II Article 16(7)</h3>
                 <p>5-7 Year Retention</p>
-                <div class="status compliant">✓ Compliant</div>
+                <div class="status compliant">Supported (compliance not determined)</div>
             </div>
             <div class="regulation-card">
                 <h3>EDPB Guidelines 02/2025</h3>
                 <p>Blockchain & GDPR</p>
-                <div class="status compliant">✓ Aligned</div>
+                <div class="status compliant">Considered (compliance not determined)</div>
             </div>
             <div class="regulation-card">
                 <h3>EU AI Act Article 12</h3>
                 <p>Automatic Logging</p>
-                <div class="status compliant">✓ Compliant</div>
+                <div class="status compliant">Supported (compliance not determined)</div>
             </div>
         </div>
         
@@ -513,7 +513,7 @@
                         <td><span class="cross">✗</span> High</td>
                     </tr>
                     <tr>
-                        <td>EDPB 02/2025 Compliant</td>
+                        <td>EDPB 02/2025 considered (not a compliance finding)</td>
                         <td><span class="check">✓</span></td>
                         <td><span class="cross">△</span></td>
                         <td><span class="cross">△</span></td>
@@ -932,7 +932,7 @@
             const certificate = await shredder.executeErasure();
             
             // Update GDPR status
-            document.getElementById('gdpr-status').textContent = '✓ Compliant';
+            document.getElementById('gdpr-status').textContent = 'Keys destroyed (may support Art. 17; compliance not determined)';
             document.getElementById('gdpr-status').className = 'status compliant';
             
             // Display certificate

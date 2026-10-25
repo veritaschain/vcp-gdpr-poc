@@ -229,7 +229,7 @@ class VCPCryptoShredder:
     3. Enabling GDPR erasure via key destruction
     4. Preserving audit trail integrity post-erasure
     
-    EDPB Guidelines 02/2025 compliant
+    Designed with EDPB Guidelines 02/2025 in mind (compliance not determined)
     """
     
     def __init__(self, kms: Optional[KeyManagementSystem] = None):

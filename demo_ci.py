@@ -130,10 +130,10 @@ def main() -> int:
         print("\n" + "=" * 50)
         print("RESULT: PARADOX RESOLVED!")
         print("=" * 50)
-        print("  ✓ GDPR Article 17: Satisfied (PII unrecoverable)")
-        print("  ✓ MiFID II Article 16(7): Satisfied (chain intact)")
-        print("  ✓ EU AI Act Article 12: Satisfied (logs preserved)")
-        print("  ✓ EDPB 02/2025: Compliant architecture")
+        print("  ✓ GDPR Article 17: Supported (PII unrecoverable)")
+        print("  ✓ MiFID II Article 16(7): Supported (chain intact)")
+        print("  ✓ EU AI Act Article 12: Supported (logs preserved)")
+        print("  - Compliance with GDPR/MiFID II/EDPB is not determined")
         print()
         
         return 0

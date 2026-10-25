@@ -1,6 +1,15 @@
+> **Status correction — 25 October 2026**
+>
+> - This is first-party proof-of-concept code by VeritasChain Co., Ltd., which operates the VeritasChain Standards Organization (VSO). It targets VCP v1.1. VCP v1.1 has no tagged release and is superseded by VCP v1.2 (Released, tag `v1.2.0`).
+> - Conformance to any VCP tier, or to VAP, has not been independently established. There are zero external implementations of VAP or any of its profiles, including VCP.
+> - Not certified. VSO does not issue certificates. The certification scheme requires a Conformity Assessment Body (CAB) independent of the scheme owner; the only registered CAB, VeritasChain Co., Ltd., is not independent (VAP v1.2 ERRATA E-2026-10-21).
+> - Crypto-shredding may support GDPR Art. 17 obligations; it does not determine compliance (VAP v1.2 §6.3.4). The same applies to the MiFID II, EU AI Act and EDPB references below.
+> - The `VCP_ERASURE_CERTIFICATE` schema in this PoC predates, and differs from, the VAP v1.2 §6.3.3 ERASURE event (`erasure_target_event_ids`, `erasure_reason`, `key_destruction_proof`, `operator_id`) and VCP v1.2 `Payload.VCP-PRIVACY.ErasureDetails`. It is not an ERASURE event.
+> - Known limitations: the key store is a simulated KMS (`KeyManagementSystem`), and the Python implementation keeps a hash chain only; it does not sign events, build Merkle trees or anchor externally.
+
 # VCP v1.1 Crypto-Shredding PoC
 
-## "The Erasable Immutable Log" — Solving the GDPR-MiFID II Paradox
+## A tamper-evident log with crypto-shredding — addressing the GDPR-MiFID II tension
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![VCP Version](https://img.shields.io/badge/VCP-v1.1-green.svg)](https://github.com/veritaschain/vcp-spec)
@@ -40,7 +49,7 @@ VCP v1.1 resolves this paradox through **cryptographic key destruction**:
 **The Result:**
 - ✓ **MiFID II**: Hash chain preserved, audit trail intact
 - ✓ **GDPR**: Personal data cryptographically unrecoverable
-- ✓ **EDPB Guidelines 02/2025**: Compliant architecture
+- **EDPB Guidelines 02/2025**: architecture designed with these guidelines in mind; may support GDPR Art. 17 obligations; does not determine compliance (VAP v1.2 §6.3.4)
 
 ---
 
@@ -113,7 +122,7 @@ Open `src/demo/index.html` in your browser to experience:
 3. **Phase 3: ERASE** — Execute GDPR crypto-shredding
 4. **Phase 4: VERIFY** — Confirm paradox resolution
 
-![Demo Screenshot](docs/demo-screenshot.png)
+(No demo screenshot is included in this repository.)
 
 ---
 
@@ -145,11 +154,11 @@ certificate = shredder.execute_erasure("TRADER-DE-12345")
 
 # Verify chain is still intact
 result = shredder.verify_chain_integrity()
-assert result["verified"] == True  # ✓ MiFID II compliant
+assert result["verified"] == True  # hash chain still verifies
 
 # Verify PII is unrecoverable
 pii_status = shredder.can_recover_pii(event)
-assert pii_status["account_id"] == False  # ✓ GDPR compliant
+assert pii_status["account_id"] == False  # PII no longer recoverable (compliance not determined)
 ```
 
 ### MT5 (MQL5) Integration
@@ -178,7 +187,7 @@ void OnTick()
 
 ---
 
-## 📋 Regulatory Compliance
+## 📋 Regulatory Mapping (design intent; does not determine compliance)
 
 ### Covered Regulations
 
@@ -192,7 +201,7 @@ void OnTick()
 
 ### Erasure Certificate
 
-Upon GDPR erasure request, VCP generates a cryptographic certificate:
+Upon an erasure request, this PoC generates a certificate in its own pre-v1.2 format (not a VAP v1.2 / VCP v1.2 ERASURE event; see the status correction above):
 
 ```json
 {
@@ -224,7 +233,7 @@ Upon GDPR erasure request, VCP generates a cryptographic certificate:
 
 - **Production**: Use HSM (AWS CloudHSM, Azure Key Vault, Thales Luna)
 - **Key Rotation**: Supported via per-event key generation
-- **Destruction Verification**: Logged in immutable audit trail
+- **Destruction Verification**: Logged in the tamper-evident (hash-chained) audit trail
 
 ### Cryptographic Primitives
 
@@ -255,8 +264,7 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 ```bash
 git clone https://github.com/veritaschain/vcp-gdpr-poc.git
 cd vcp-gdpr-poc
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
+pip install -r requirements.txt   # includes pytest; there is no requirements-dev.txt
 pytest tests/ -v
 ```
 
