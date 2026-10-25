@@ -2,7 +2,7 @@
 >
 > - This is first-party proof-of-concept code by VeritasChain Co., Ltd., which operates the VeritasChain Standards Organization (VSO). It targets VCP v1.1. VCP v1.1 has no tagged release and is superseded by VCP v1.2 (Released, tag `v1.2.0`).
 > - Conformance to any VCP tier, or to VAP, has not been independently established. There are zero external implementations of VAP or any of its profiles, including VCP.
-> - Not certified. VSO does not issue certificates. The certification scheme requires a Conformity Assessment Body (CAB) independent of the scheme owner; the only registered CAB, VeritasChain Co., Ltd., is not independent (VAP v1.2 ERRATA E-2026-10-21).
+> - Not certified. VSO does not issue certifications itself. The certification scheme requires a Conformity Assessment Body (CAB) independent of the scheme owner; the only registered CAB, VeritasChain Co., Ltd., is not independent (VAP v1.2 ERRATA E-2026-10-21).
 > - Crypto-shredding may support GDPR Art. 17 obligations; it does not determine compliance (VAP v1.2 §6.3.4). The same applies to the MiFID II, EU AI Act and EDPB references below.
 > - The `VCP_ERASURE_CERTIFICATE` schema in this PoC predates, and differs from, the VAP v1.2 §6.3.3 ERASURE event (`erasure_target_event_ids`, `erasure_reason`, `key_destruction_proof`, `operator_id`) and VCP v1.2 `Payload.VCP-PRIVACY.ErasureDetails`. It is not an ERASURE event.
 > - Known limitations: the key store is a simulated KMS (`KeyManagementSystem`), and the Python implementation keeps a hash chain only; it does not sign events, build Merkle trees or anchor externally.
