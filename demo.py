@@ -3,7 +3,7 @@
 VCP v1.1 Quick Demo
 ===================
 
-Run this script to see the GDPR-MiFID II Paradox resolution in action.
+Run this script to inspect local key-store removal and hash-chain checks.
 
 Usage:
     python demo.py
@@ -30,7 +30,7 @@ def main():
     print()
     print("╔══════════════════════════════════════════════════════════════════╗")
     print("║           VCP v1.1 Crypto-Shredding Quick Demo                   ║")
-    print("║           'The Erasable Immutable Log'                           ║")
+    print("║           Tamper-evident log with crypto-shredding               ║")
     print("╚══════════════════════════════════════════════════════════════════╝")
     print()
     
@@ -129,9 +129,9 @@ def main():
     
     # Check PII status
     pii_status = shredder.can_recover_pii(order_event)
-    print("  PII Recovery Status (before erasure):")
+    print("  PII Key Availability in Simulated Store (before erasure):")
     for field, recoverable in pii_status.items():
-        status = "🔓 Recoverable" if recoverable else "🔒 Not recoverable"
+        status = "🔓 Key present" if recoverable else "🔒 Key absent from store"
         print(f"    {field}: {status}")
     print()
     
@@ -151,15 +151,15 @@ def main():
     certificate = shredder.execute_erasure(subject_id)
     
     print(f"  🗑️  CRYPTO-SHREDDING EXECUTED")
-    print(f"     Keys destroyed: {certificate.keys_destroyed}")
+    print(f"     Keys removed from simulated store: {certificate.keys_destroyed}")
     print(f"     Method: {certificate.method}")
     print()
-    print(f"  📜 ERASURE CERTIFICATE GENERATED")
+    print(f"  📜 UNSIGNED LOCAL ERASURE REPORT GENERATED")
     print(f"     Certificate ID: {certificate.certificate_id}")
     print(f"     Timestamp: {certificate.erasure_timestamp}")
     print()
     
-    input("Press Enter to verify paradox resolution...")
+    input("Press Enter to inspect the post-erasure state...")
     print()
     
     # ═══════════════════════════════════════════════════════════════════════
@@ -177,9 +177,9 @@ def main():
     
     # Check PII status after erasure
     pii_status_after = shredder.can_recover_pii(order_event)
-    print("  PII Recovery Status (after erasure):")
+    print("  PII Key Availability in Simulated Store (after erasure):")
     for field, recoverable in pii_status_after.items():
-        status = "🔓 Recoverable" if recoverable else "🔒 SHREDDED"
+        status = "🔓 Key present" if recoverable else "🔒 Key absent from store"
         print(f"    {field}: {status}")
     print()
     
@@ -188,17 +188,17 @@ def main():
     # ═══════════════════════════════════════════════════════════════════════
     print()
     print("╔══════════════════════════════════════════════════════════════════╗")
-    print("║                   🎉 PARADOX RESOLVED! 🎉                        ║")
+    print("║                   LOCAL DEMO CHECKS COMPLETE                    ║")
     print("╠══════════════════════════════════════════════════════════════════╣")
     print("║                                                                  ║")
-    print("║  ✓ GDPR Article 17: PII cryptographically unrecoverable         ║")
-    print("║  ✓ MiFID II Article 16(7): Hash chain intact, audit preserved   ║")
-    print("║  ✓ EDPB 02/2025: Compliant architecture                         ║")
-    print("║  ✓ EU AI Act Article 12: Decision trail preserved               ║")
+    print("║  - Inspect the chain and local key-availability results above.  ║")
+    print("║  - Erasure report is unsigned; verification flags are preset.   ║")
+    print("║  - Retained copies and memory zeroization are not assessed.     ║")
+    print("║  - GDPR/MiFID II/EU AI Act/EDPB compliance is not determined.    ║")
     print("║                                                                  ║")
     print("╚══════════════════════════════════════════════════════════════════╝")
     print()
-    print("  Erasure Certificate (for DPO/regulator evidence):")
+    print("  Unsigned local erasure report (not proof of secure destruction):")
     print("  " + "─" * 66)
     print(certificate.to_json())
     print()

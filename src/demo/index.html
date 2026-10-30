@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VCP v1.1 Crypto-Shredding Demo | GDPR-MiFID II Paradox Resolver</title>
+    <title>VCP v1.1 Crypto-Shredding Demo | Local Key-Store Removal Demo</title>
     <style>
         :root {
             --primary: #1a365d;
@@ -380,12 +380,13 @@
     <div class="container">
         <header>
             <h1>🔐 VCP v1.1 Crypto-Shredding Demo</h1>
-            <p class="subtitle">VeritasChain Protocol | "The Erasable Immutable Log"</p>
+            <p class="subtitle">VeritasChain Protocol | Tamper-evident log with crypto-shredding</p>
+            <p class="subtitle">First-party PoC using simulated in-memory key storage and local hash-chain checks. No signatures, Merkle proofs or external anchoring. Key removal does not prove destruction of retained copies or memory zeroization; regulatory compliance is not assessed.</p>
         </header>
         
         <div class="paradox-banner">
-            <h2>The GDPR-MiFID II Paradox</h2>
-            <p>"How do you prove data was deleted while proving it was never altered?"</p>
+            <h2>Exploring erasure and record retention</h2>
+            <p>Inspect local key availability and hash-chain results; this demo does not prove secure erasure or legal compliance.</p>
         </div>
         
         <div class="regulations">
@@ -397,17 +398,17 @@
             <div class="regulation-card">
                 <h3>MiFID II Article 16(7)</h3>
                 <p>5-7 Year Retention</p>
-                <div class="status compliant">✓ Compliant</div>
+                <div class="status compliant">Supported (compliance not determined)</div>
             </div>
             <div class="regulation-card">
                 <h3>EDPB Guidelines 02/2025</h3>
                 <p>Blockchain & GDPR</p>
-                <div class="status compliant">✓ Aligned</div>
+                <div class="status compliant">Considered (compliance not determined)</div>
             </div>
             <div class="regulation-card">
                 <h3>EU AI Act Article 12</h3>
                 <p>Automatic Logging</p>
-                <div class="status compliant">✓ Compliant</div>
+                <div class="status compliant">Supported (compliance not determined)</div>
             </div>
         </div>
         
@@ -453,14 +454,14 @@
                 </button>
             </div>
             <p style="color: var(--gray-600); font-size: 0.85rem; margin-bottom: 1rem;">
-                Destroys encryption keys, making PII cryptographically unrecoverable while preserving hash chain integrity.
+                Removes keys from the simulated store. Encrypted events remain; retained copies and memory zeroization are not assessed.
             </p>
             <div id="certificate-area"></div>
         </div>
         
         <!-- Phase 4: Verify Post-Erasure -->
         <div class="demo-section">
-            <h2><span class="phase-indicator">4</span> VERIFY POST-ERASURE - The Paradox Resolved</h2>
+            <h2><span class="phase-indicator">4</span> VERIFY POST-ERASURE - Local Checks</h2>
             <div class="controls">
                 <button class="btn-success" onclick="verifyPostErasure()">
                     ✓ Verify Chain After Erasure
@@ -471,7 +472,8 @@
         
         <!-- Comparison Table -->
         <div class="demo-section">
-            <h2>📊 Comparison: VCP vs Traditional Approaches</h2>
+            <h2>📊 Design Comparison (not measured PoC results)</h2>
+            <p>The comparison below describes design intentions, not demonstrated properties or compliance findings for this PoC. This implementation has no Merkle proofs or external anchoring, and does not test multi-year retention.</p>
             <table class="comparison-table">
                 <thead>
                     <tr>
@@ -513,7 +515,7 @@
                         <td><span class="cross">✗</span> High</td>
                     </tr>
                     <tr>
-                        <td>EDPB 02/2025 Compliant</td>
+                        <td>EDPB 02/2025 considered (not a compliance finding)</td>
                         <td><span class="check">✓</span></td>
                         <td><span class="cross">△</span></td>
                         <td><span class="cross">△</span></td>
@@ -800,7 +802,7 @@
                     <div class="type">${event.header.eventType}</div>
                     <div class="hash">${event.header.eventHash.slice(0, 12)}...</div>
                     <div class="pii-status ${canRecover ? 'recoverable' : 'shredded'}">
-                        ${canRecover ? '🔓 PII Recoverable' : '🔒 PII Shredded'}
+                        ${canRecover ? '🔓 PII key present' : '🔒 PII key absent from store'}
                     </div>
                 `;
                 
@@ -907,7 +909,7 @@
             shredder.eventChain.forEach((event, index) => {
                 const status = shredder.canRecoverPII(event);
                 const statusStr = Object.entries(status)
-                    .map(([k, v]) => `${k}: ${v ? '🔓 Recoverable' : '🔒 Shredded'}`)
+                    .map(([k, v]) => `${k}: ${v ? '🔓 Key present' : '🔒 Key absent from store'}`)
                     .join(', ');
                 html += `Event ${index + 1} (${event.header.eventType}): ${statusStr || 'No PII fields'}<br>`;
             });
@@ -932,17 +934,18 @@
             const certificate = await shredder.executeErasure();
             
             // Update GDPR status
-            document.getElementById('gdpr-status').textContent = '✓ Compliant';
+            document.getElementById('gdpr-status').textContent = 'Keys removed from local store (compliance not determined)';
             document.getElementById('gdpr-status').className = 'status compliant';
             
             // Display certificate
             const certArea = document.getElementById('certificate-area');
             certArea.innerHTML = `
-                <h3 style="margin-bottom: 0.5rem; color: var(--primary);">📜 Erasure Certificate</h3>
+                <h3 style="margin-bottom: 0.5rem; color: var(--primary);">📜 Unsigned Local Erasure Report</h3>
+                <p>Verification flags are preset values, not measured checks or proof of secure destruction.</p>
                 <div class="certificate-display">${JSON.stringify(certificate, null, 2)}</div>
             `;
             
-            log(`GDPR Erasure executed: ${certificate.keysDestroyed} keys destroyed`, 'warning');
+            log(`Local key removal executed: ${certificate.keysDestroyed} entries removed`, 'warning');
             log(`Certificate ID: ${certificate.certificateId}`, 'success');
             
             // Disable erasure button
@@ -972,34 +975,34 @@
             });
             
             resultDiv.innerHTML = `
-                <div class="verification-result success">
-                    <h3 style="margin-bottom: 1rem;">🎉 The GDPR-MiFID II Paradox is Resolved!</h3>
+                <div class="verification-result">
+                    <h3 style="margin-bottom: 1rem;">Post-erasure local checks</h3>
                     <table style="width: 100%;">
                         <tr>
                             <td><strong>Hash Chain Integrity:</strong></td>
                             <td>${chainResult.verified ? '✓ PRESERVED' : '✗ BROKEN'}</td>
-                            <td style="color: var(--gray-600);">MiFID II Article 16(7) ✓</td>
+                            <td style="color: var(--gray-600);">Local hash-chain check</td>
                         </tr>
                         <tr>
-                            <td><strong>PII Data:</strong></td>
-                            <td>${allPIIShredded ? '✓ CRYPTO-SHREDDED' : '⚠ Partial'}</td>
-                            <td style="color: var(--gray-600);">GDPR Article 17 ✓</td>
+                            <td><strong>PII Key Availability:</strong></td>
+                            <td>${allPIIShredded ? 'Keys absent from local store' : 'Keys remain in local store'}</td>
+                            <td style="color: var(--gray-600);">Store lookup only; retained copies not assessed</td>
                         </tr>
                         <tr>
-                            <td><strong>Audit Trail:</strong></td>
-                            <td>✓ INTACT</td>
-                            <td style="color: var(--gray-600);">EU AI Act Article 12 ✓</td>
+                            <td><strong>Independent Audit Assurance:</strong></td>
+                            <td>Not established</td>
+                            <td style="color: var(--gray-600);">No signatures or external anchor</td>
                         </tr>
                         <tr>
-                            <td><strong>Erasure Proof:</strong></td>
-                            <td>✓ CERTIFICATE GENERATED</td>
-                            <td style="color: var(--gray-600);">EDPB 02/2025 ✓</td>
+                            <td><strong>Erasure Report:</strong></td>
+                            <td>Unsigned local report generated</td>
+                            <td style="color: var(--gray-600);">Preset flags; not proof of secure destruction</td>
                         </tr>
                     </table>
                 </div>
             `;
             
-            log('Post-erasure verification complete: All requirements satisfied!', 'success');
+            log('Post-erasure checks complete; inspect the displayed results. Compliance is not assessed.', 'info');
         }
         
         // Initialize
