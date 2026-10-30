@@ -3,8 +3,8 @@
 VCP v1.1 Crypto-Shredding Implementation
 =========================================
 
-Solves the "GDPR-MiFID II Paradox": How to prove data was deleted
-while proving it was never altered.
+Demonstrates field encryption, simulated key-store removal and local
+hash-chain checks. Secure destruction and regulatory compliance are not established.
 
 Compliance References:
 - GDPR Article 17 (Right to Erasure)
@@ -118,8 +118,8 @@ class VCPEvent:
 @dataclass
 class ErasureCertificate:
     """
-    GDPR Article 17 Erasure Certificate
-    Provides cryptographic proof of data erasure
+    Unsigned local report of simulated key-removal actions.
+    Verification booleans are preset values, not measured verification results.
     """
     certificate_id: str
     version: str = "1.0"
@@ -150,8 +150,9 @@ class ErasureCertificate:
 
 class KeyManagementSystem:
     """
-    Simulated HSM/KMS for key storage and destruction
-    In production, replace with actual HSM integration (e.g., AWS CloudHSM, Azure Key Vault)
+    Simulated in-memory key store for the local demonstration.
+    Removing a stored reference does not prove destruction of retained copies
+    or memory zeroization. Production key management is outside this PoC.
     """
     
     def __init__(self):
@@ -180,13 +181,13 @@ class KeyManagementSystem:
     
     def destroy_key(self, key_id: str) -> bool:
         """
-        Securely destroy a key (crypto-shredding)
-        Returns True if destruction was successful
+        Remove a key from the simulated store.
+        Returns True if the stored entry was removed; retained copies are not checked.
         """
         if key_id not in self._keys:
             return False
         
-        # Overwrite key material before deletion (defense in depth)
+        # Replace the stored reference; this does not zeroize retained key bytes.
         key_length = len(self._keys[key_id])
         self._keys[key_id] = os.urandom(key_length)
         
@@ -223,10 +224,10 @@ class VCPCryptoShredder:
     """
     VCP v1.1 Crypto-Shredding Implementation
     
-    Solves the GDPR-MiFID II Paradox by:
+    Demonstrates a possible erasure/retention design approach by:
     1. Encrypting PII with per-subject keys
     2. Maintaining hash chain integrity with encrypted data
-    3. Enabling GDPR erasure via key destruction
+    3. Removing keys from a simulated store
     4. Preserving audit trail integrity post-erasure
     
     Designed with EDPB Guidelines 02/2025 in mind (compliance not determined)
@@ -287,11 +288,11 @@ class VCPCryptoShredder:
     def decrypt_pii(self, encrypted: PIIEncryptionResult) -> Optional[str]:
         """
         Decrypt PII data (only possible if key still exists)
-        Returns None if key has been destroyed (crypto-shredded)
+        Returns None if the key is absent from this store.
         """
         key = self.kms.get_key(encrypted.key_id)
         if not key:
-            return None  # Key destroyed - data is crypto-shredded
+            return None  # Key absent from this store; copies are not assessed.
         
         try:
             nonce = base64.b64decode(encrypted.nonce)
@@ -396,17 +397,17 @@ class VCPCryptoShredder:
     
     def execute_erasure(self, subject_id: str) -> ErasureCertificate:
         """
-        Execute GDPR Article 17 erasure via crypto-shredding
+        Remove the subject's keys from the simulated store.
         
-        Destroys all encryption keys for the subject, rendering
-        their PII cryptographically unrecoverable while preserving
-        the hash chain integrity.
+        Encrypted payloads remain in the chain. This action does not prove
+        destruction of retained key or plaintext copies, memory zeroization,
+        or legal compliance. Inspect chain integrity with the separate verifier.
         
         Args:
             subject_id: Data subject requesting erasure
         
         Returns:
-            ErasureCertificate providing proof of erasure
+            Unsigned local report with preset verification booleans.
         """
         # Get all keys for subject
         key_ids = self.kms.get_keys_for_subject(subject_id)
@@ -511,8 +512,8 @@ class VCPCryptoShredder:
     
     def can_recover_pii(self, event: VCPEvent) -> Dict[str, bool]:
         """
-        Check which PII fields can still be recovered
-        (Returns False for fields whose keys have been destroyed)
+        Check whether encrypted fields' keys exist in this simulated store.
+        This does not test decryption or destruction of retained copies.
         """
         result = {}
         
@@ -540,11 +541,11 @@ class VCPCryptoShredder:
 
 def demo_crypto_shredding():
     """
-    Demonstration of the GDPR-MiFID II Paradox resolution
+    Demonstration of local key-store removal and hash-chain checks.
     """
     print("=" * 70)
     print("VCP v1.1 Crypto-Shredding Demo")
-    print("Solving the GDPR-MiFID II Paradox")
+    print("Local key-store removal and hash-chain checks")
     print("=" * 70)
     print()
     
@@ -619,7 +620,7 @@ def demo_crypto_shredding():
     # Check PII recoverability
     first_event = shredder.get_chain()[0]
     pii_status = shredder.can_recover_pii(first_event)
-    print(f"  PII recoverable: {pii_status}")
+    print(f"  PII keys available in simulated store: {pii_status}")
     
     print()
     print("Phase 3: ERASE - GDPR Article 17 erasure request")
@@ -628,7 +629,7 @@ def demo_crypto_shredding():
     
     certificate = shredder.execute_erasure(subject_id)
     
-    print(f"  Keys destroyed: {certificate.keys_destroyed}")
+    print(f"  Keys removed from simulated store: {certificate.keys_destroyed}")
     print(f"  Erasure timestamp: {certificate.erasure_timestamp}")
     print(f"  Certificate ID: {certificate.certificate_id}")
     print(f"  Certificate hash: {certificate.certificate_hash[:32]}...")
@@ -643,20 +644,21 @@ def demo_crypto_shredding():
     
     # Check PII recoverability after erasure
     pii_status_post = shredder.can_recover_pii(first_event)
-    print(f"  PII recoverable: {pii_status_post}")
+    print(f"  PII keys available in simulated store: {pii_status_post}")
     
     print()
     print("=" * 70)
-    print("RESULT: The Paradox is Resolved!")
+    print("RESULT: Local demo checks complete")
     print("=" * 70)
     print("""
-  ✓ Hash chain integrity: PRESERVED (MiFID II Article 16(7) satisfied)
-  ✓ PII data: CRYPTOGRAPHICALLY UNRECOVERABLE (GDPR Article 17 satisfied)
-  ✓ Audit trail: INTACT (Regulators can verify event sequence)
-  ✓ Erasure proof: CERTIFICATE GENERATED (Evidence for DPO)
+  - Hash chain: inspect the verifier result above.
+  - PII keys: inspect availability in the simulated store above.
+  - Erasure report: unsigned, with preset verification flags.
+  - Retained copies and memory zeroization are not assessed.
+  - GDPR, MiFID II, EU AI Act and EDPB compliance is not determined.
     """)
     
-    print("Erasure Certificate (for regulatory evidence):")
+    print("Unsigned local erasure report (not proof of secure destruction):")
     print("-" * 70)
     print(certificate.to_json())
     

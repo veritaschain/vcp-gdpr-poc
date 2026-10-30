@@ -5,7 +5,8 @@
 > - Not certified. VSO does not issue certifications itself. The certification scheme requires a Conformity Assessment Body (CAB) independent of the scheme owner; the only registered CAB, VeritasChain Co., Ltd., is not independent (VAP v1.2 ERRATA E-2026-10-21).
 > - Crypto-shredding may support GDPR Art. 17 obligations; it does not determine compliance (VAP v1.2 §6.3.4). The same applies to the MiFID II, EU AI Act and EDPB references below.
 > - The `VCP_ERASURE_CERTIFICATE` schema in this PoC predates, and differs from, the VAP v1.2 §6.3.3 ERASURE event (`erasure_target_event_ids`, `erasure_reason`, `key_destruction_proof`, `operator_id`) and VCP v1.2 `Payload.VCP-PRIVACY.ErasureDetails`. It is not an ERASURE event.
-> - Known limitations: the key store is a simulated KMS (`KeyManagementSystem`), and the Python implementation keeps a hash chain only; it does not sign events, build Merkle trees or anchor externally.
+> - Known limitations: the Python and browser demos use simulated in-memory key stores and local hash-chain checks. Neither implementation signs events, builds Merkle trees or anchors externally. Removing a key from a store does not demonstrate destruction of retained copies or backups, removal of plaintext copies, or memory zeroization. `can_recover_pii()` / `canRecoverPII()` checks key availability in that store, not irrecoverability.
+> - The erasure certificate is an unsigned local report. Its `verification` booleans are preset values, not measured chain-verification or erasure results. The certificate hash is a hash of the report contents, not independent proof of key destruction; run the separate chain verifier to inspect chain integrity.
 
 # VCP v1.1 Crypto-Shredding PoC
 
@@ -19,7 +20,7 @@
 
 ## 🎯 The Problem: A Regulatory Paradox
 
-European algorithmic trading firms face an impossible choice:
+This PoC explores the technical tension between personal-data erasure requests and trading-record retention:
 
 | Regulation | Requirement | Implication |
 |------------|-------------|-------------|
@@ -32,7 +33,7 @@ European algorithmic trading firms face an impossible choice:
 
 ## ✅ The Solution: Crypto-Shredding
 
-VCP v1.1 resolves this paradox through **cryptographic key destruction**:
+This PoC explores **cryptographic key destruction** as a design approach. The diagram illustrates the intended outcome; this implementation demonstrates local key-store removal and hash-chain checks only:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -46,9 +47,9 @@ VCP v1.1 resolves this paradox through **cryptographic key destruction**:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**The Result:**
-- ✓ **MiFID II**: Hash chain preserved, audit trail intact
-- ✓ **GDPR**: Personal data cryptographically unrecoverable
+**Demonstrated scope:**
+- Local hash-chain checks before and after removing keys from the simulated store.
+- PII keys are no longer returned by that store. Destruction of copies and legal compliance are not established.
 - **EDPB Guidelines 02/2025**: architecture designed with these guidelines in mind; may support GDPR Art. 17 obligations; does not determine compliance (VAP v1.2 §6.3.4)
 
 ---
@@ -119,8 +120,8 @@ Open `src/demo/index.html` in your browser to experience:
 
 1. **Phase 1: RECORD** — Create trading events with encrypted PII
 2. **Phase 2: RETAIN** — Verify hash chain integrity
-3. **Phase 3: ERASE** — Execute GDPR crypto-shredding
-4. **Phase 4: VERIFY** — Confirm paradox resolution
+3. **Phase 3: ERASE** — Remove keys from the simulated store
+4. **Phase 4: VERIFY** — Inspect hash-chain and local key-availability results
 
 (No demo screenshot is included in this repository.)
 
@@ -156,9 +157,9 @@ certificate = shredder.execute_erasure("TRADER-DE-12345")
 result = shredder.verify_chain_integrity()
 assert result["verified"] == True  # hash chain still verifies
 
-# Verify PII is unrecoverable
+# Check whether the simulated store still returns the PII key
 pii_status = shredder.can_recover_pii(event)
-assert pii_status["account_id"] == False  # PII no longer recoverable (compliance not determined)
+assert pii_status["account_id"] == False  # key absent from this store; copies and compliance not assessed
 ```
 
 ### MT5 (MQL5) Integration
@@ -201,7 +202,7 @@ void OnTick()
 
 ### Erasure Certificate
 
-Upon an erasure request, this PoC generates a certificate in its own pre-v1.2 format (not a VAP v1.2 / VCP v1.2 ERASURE event; see the status correction above):
+Upon an erasure request, this PoC generates an unsigned local report in its own pre-v1.2 certificate format (not a VAP v1.2 / VCP v1.2 ERASURE event; see the status correction above). The `verification` values shown below are preset fields, not measured verification results or proof of secure destruction:
 
 ```json
 {
@@ -232,17 +233,19 @@ Upon an erasure request, this PoC generates a certificate in its own pre-v1.2 fo
 ### Key Management
 
 - **Production**: Use HSM (AWS CloudHSM, Azure Key Vault, Thales Luna)
-- **Key Rotation**: Supported via per-event key generation
-- **Destruction Verification**: Logged in the tamper-evident (hash-chained) audit trail
+- **Key Lifecycle**: The Python implementation reuses an active key for each subject and creates one only when none exists. Per-event key generation and a production key-rotation lifecycle are not implemented.
+- **Erasure Logging**: The Python implementation records local key-removal actions in the hash chain. This does not verify destruction of key copies or memory zeroization.
 
 ### Cryptographic Primitives
 
-| Component | Algorithm | Standard |
-|-----------|-----------|----------|
-| Encryption | AES-256-GCM | NIST SP 800-38D |
-| Hashing | SHA-256 | FIPS 180-4 |
-| Signatures | Ed25519 | RFC 8032 |
-| Key Derivation | HKDF | RFC 5869 |
+The production architecture descriptions in the linked documents are design targets; the implemented scope is listed below.
+
+| Component | Algorithm | Standard | PoC implementation status |
+|-----------|-----------|----------|---------------------------|
+| Encryption | AES-256-GCM | NIST SP 800-38D | Implemented for selected fields |
+| Hashing | SHA-256 | FIPS 180-4 | Implemented for the local chain and report hash |
+| Signatures | Ed25519 | RFC 8032 | Not implemented |
+| Key Derivation | HKDF | RFC 5869 | Imported in Python, but not used |
 
 ---
 

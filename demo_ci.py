@@ -3,14 +3,14 @@
 VCP v1.1 CI Demo (Non-Interactive)
 ==================================
 
-Runs the full GDPR-MiFID II Paradox resolution demo without user input.
+Runs local key-store removal and hash-chain checks without user input.
 Suitable for CI/CD pipelines.
 
 Usage:
     python demo_ci.py
 
 Exit codes:
-    0 = Success (paradox resolved)
+    0 = Local demo checks passed (not a compliance finding)
     1 = Failure
 
 (C) 2025 VeritasChain Standards Organization
@@ -86,15 +86,15 @@ def main() -> int:
         # Check PII is recoverable
         pii_before = shredder.can_recover_pii(order_event)
         if not all(pii_before.values()):
-            print("  ✗ PII should be recoverable before erasure!")
+            print("  ✗ PII keys should be present in the simulated store before erasure!")
             return 1
-        print("  ✓ PII recoverable: " + ", ".join(pii_before.keys()))
+        print("  ✓ PII keys present in simulated store: " + ", ".join(pii_before.keys()))
         
         # PHASE 3: Execute erasure
         print("\n[PHASE 3] Executing GDPR erasure...")
         
         certificate = shredder.execute_erasure(subject_id)
-        print(f"  ✓ Keys destroyed: {certificate.keys_destroyed}")
+        print(f"  ✓ Keys removed from simulated store: {certificate.keys_destroyed}")
         print(f"  ✓ Certificate: {certificate.certificate_id[:30]}...")
         
         # PHASE 4: Verify post-erasure
@@ -110,9 +110,9 @@ def main() -> int:
         # PII should NOT be recoverable
         pii_after = shredder.can_recover_pii(order_event)
         if any(pii_after.values()):
-            print("  ✗ PII should NOT be recoverable after erasure!")
+            print("  ✗ PII keys remain in the simulated store after erasure!")
             return 1
-        print("  ✓ PII unrecoverable (crypto-shredded)")
+        print("  ✓ PII keys absent from simulated store (retained copies not assessed)")
         
         # Certificate verification fields
         if not certificate.verification["hash_chain_intact"]:
@@ -124,16 +124,17 @@ def main() -> int:
         if not certificate.verification["audit_trail_preserved"]:
             print("  ✗ Certificate claims audit trail is lost!")
             return 1
-        print("  ✓ Certificate verification fields correct")
+        print("  - Report verification flags match preset values; these are not measured checks")
         
         # SUCCESS
         print("\n" + "=" * 50)
-        print("RESULT: PARADOX RESOLVED!")
+        print("RESULT: LOCAL DEMO CHECKS PASSED")
         print("=" * 50)
-        print("  ✓ GDPR Article 17: Supported (PII unrecoverable)")
-        print("  ✓ MiFID II Article 16(7): Supported (chain intact)")
-        print("  ✓ EU AI Act Article 12: Supported (logs preserved)")
-        print("  - Compliance with GDPR/MiFID II/EDPB is not determined")
+        print("  ✓ Local hash-chain checks passed")
+        print("  ✓ PII keys absent from the simulated store")
+        print("  - Erasure report is unsigned; verification flags are preset")
+        print("  - Retained copies and memory zeroization are not assessed")
+        print("  - GDPR/MiFID II/EU AI Act/EDPB compliance is not determined")
         print()
         
         return 0
