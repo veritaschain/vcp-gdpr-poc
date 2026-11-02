@@ -59,7 +59,7 @@ def main():
         event_type=EventType.ORD,
         payload={
             "account_id": "ACC-12345-DE",
-            "email": "trader@beispiel.de",
+            "email": "trader@example.com",
             "ip_address": "192.168.1.100",
             "symbol": "EURUSD",
             "side": "BUY",
