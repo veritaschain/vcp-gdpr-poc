@@ -463,19 +463,17 @@ class VCPCryptoShredder:
         Returns:
             Verification result with details
         """
-        if not self._event_chain:
-            return {
-                "verified": True,
-                "events_checked": 0,
-                "message": "Empty chain"
-            }
-        
         results = {
-            "verified": True,
+            "verified": bool(self._event_chain),
+            "status": "VALID" if self._event_chain else "INDETERMINATE",
+            "result_scope": "LOCAL_PAYLOAD_HASH_CHAIN",
             "events_checked": len(self._event_chain),
             "errors": [],
-            "verified_at": datetime.now(timezone.utc).isoformat() + "Z"
+            "verified_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         }
+        if not self._event_chain:
+            results["message"] = "No events supplied; local chain integrity is not established"
+            return results
         
         for i, event in enumerate(self._event_chain):
             # Check chain linkage
@@ -508,6 +506,7 @@ class VCPCryptoShredder:
                     "actual": event.header.event_hash
                 })
         
+        results["status"] = "VALID" if results["verified"] else "INVALID"
         return results
     
     def can_recover_pii(self, event: VCPEvent) -> Dict[str, bool]:

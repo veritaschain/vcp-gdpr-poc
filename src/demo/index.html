@@ -657,10 +657,16 @@
             // Verify chain integrity
             async verifyChain() {
                 const results = {
-                    verified: true,
+                    verified: this.eventChain.length > 0,
+                    status: this.eventChain.length > 0 ? 'VALID' : 'INDETERMINATE',
+                    resultScope: 'LOCAL_PAYLOAD_HASH_CHAIN',
                     eventsChecked: this.eventChain.length,
                     errors: []
                 };
+                if (this.eventChain.length === 0) {
+                    results.message = 'No events supplied; local chain integrity is not established';
+                    return results;
+                }
                 
                 for (let i = 0; i < this.eventChain.length; i++) {
                     const event = this.eventChain[i];
@@ -690,6 +696,7 @@
                     }
                 }
                 
+                results.status = results.verified ? 'VALID' : 'INVALID';
                 return results;
             }
             
@@ -980,7 +987,7 @@
                     <table style="width: 100%;">
                         <tr>
                             <td><strong>Hash Chain Integrity:</strong></td>
-                            <td>${chainResult.verified ? '✓ PRESERVED' : '✗ BROKEN'}</td>
+                            <td>${chainResult.status === 'INDETERMINATE' ? 'Not established: no events' : chainResult.verified ? '✓ PRESERVED' : '✗ BROKEN'}</td>
                             <td style="color: var(--gray-600);">Local hash-chain check</td>
                         </tr>
                         <tr>
