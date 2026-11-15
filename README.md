@@ -112,6 +112,27 @@ python src/python/vcp_sidecar_adapter.py --port 8765
 pytest tests/ -v
 ```
 
+### Local chain result semantics — 15 November 2026
+
+The Python `verify_chain_integrity()` and browser `verifyChain()` methods now
+return `verified: false` and `status: INDETERMINATE` for an empty chain. No
+events is not evidence that a chain was checked successfully. A nonempty local
+match has `status: VALID`; a payload-hash or stored-link mismatch has
+`status: INVALID`. The sidecar's `/verify` response carries the Python result.
+
+The result scope is `LOCAL_PAYLOAD_HASH_CHAIN` (`result_scope` in Python,
+`resultScope` in JavaScript). These existing algorithms check serialized
+payloads and stored hash links, not all event headers or metadata. They do not
+authenticate the source, prove history completeness, assess retained plaintext
+or key copies, measure secure erasure, or determine legal compliance. A coherent
+rewrite of payloads and hashes can still match. The Python and browser JSON
+encodings remain their existing, separate PoC formats; this is not a new
+canonicalization or protocol requirement.
+
+Run the browser implementation's core regressions with
+`node --test tests/test_browser_chain.cjs` (Node.js 22 or later, no npm packages).
+The existing event samples and unsigned erasure-report format are unchanged.
+
 ---
 
 ## 📊 Interactive Demo
