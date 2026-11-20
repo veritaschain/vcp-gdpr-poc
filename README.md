@@ -217,7 +217,7 @@ void OnTick()
 |------------|---------|-------------|--------------|
 | **GDPR** | Art. 17 | Right to Erasure | Crypto-shredding |
 | **MiFID II** | Art. 16(7) | 5-7 Year Retention | Hash chain preservation |
-| **MiFID II** | RTS 25 | Clock Sync | TimestampPrecision, ClockSyncStatus |
+| **MiFIR** | Delegated Regulation (EU) 2025/1155, Arts. 11–16 (replaced MiFID II RTS 25 on 2 March 2026) | Clock Sync | TimestampPrecision, ClockSyncStatus |
 | **EU AI Act** | Art. 12 | Automatic Logging | VCP-CORE event capture |
 | **EDPB** | Guidelines 02/2025 | Blockchain & GDPR | Architecture alignment |
 
